@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامه آزمون موسسه خوارزمی</title>
+    <style>
+        /* استایل کلی صفحه */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* استایل دکمه‌ها */
+        button {
+            background-color: #555555;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #666666;
+        }
+        
+        button.selected {
+            background-color: #3399ff;
+        }
+        
+        button.correct {
+            background-color: #33cc33;
+        }
+        
+        button.incorrect {
+            background-color: #ff4d4d;
+        }
+        
+        button.nav-btn {
+            background-color: #2b5278;
+        }
+        
+        button.submit-btn {
+            background-color: #33cc33;
+        }
+        
+        /* استایل منوی اصلی */
+        .main-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        
+        .lesson-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .lesson-btn {
+            width: 400px;
+            height: 70px;
+            font-size: 22px;
+        }
+        
+        /* استایل بخش سوالات */
+        .quiz-container {
+            display: none;
+        }
+        
+        .lesson-title {
+            font-size: 40px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .timer {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .question {
+            font-size: 25px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: right;
+            line-height: 1.6;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .option-btn {
+            width: 100%;
+            height: 50px;
+            text-align: right;
+            font-size: 20px;
+            padding: 0 20px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .question-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+        
+        .number-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        /* استایل صفحه نتایج */
+        .results-container {
+            display: none;
+        }
+        
+        .summary {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* استایل راهنما */
+        .help-container {
+            display: none;
+            text-align: right;
+            line-height: 2;
+            font-size: 20px;
+            padding: 20px;
+        }
+        
+        /* استایل هدر و فوتر */
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #444;
+            margin-bottom: 30px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #444;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        
+        /* رسپانسیو */
+        @media (max-width: 768px) {
+            .lesson-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .lesson-btn {
+                width: 100%;
+            }
+            
+            .question {
+                font-size: 20px;
+            }
+            
+            .option-btn {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>برنامه آزمون موسسه خوارزمی</h1>
+    </header>
+    
+    <div class="container">
+        <!-- منوی اصلی -->
+        <div id="main-menu" class="main-menu">
+            <div class="lesson-buttons">
+                <button class="lesson-btn" onclick="startQuiz('rang', 'طراحی رنگی')">طراحی رنگی</button>
+                <button class="lesson-btn" onclick="startQuiz('graf', 'گرافیک رایانه')">گرافیک رایانه</button>
+                <button class="lesson-btn" onclick="startQuiz('package', 'طراحی بسته‌بندی')">طراحی بسته‌بندی</button>
+                <button class="lesson-btn" onclick="startQuiz('blackwhite', 'سیاه و سفید')">سیاه و سفید</button>
+                <button class="lesson-btn" onclick="startQuiz('user', 'کاربر')">کاربر</button>
+                <button class="lesson-btn" onclick="startQuiz('type', 'تایپ')">تایپ</button>
+                <button class="lesson-btn" onclick="startQuiz('layout', 'صفحه‌آرایی')">صفحه‌آرایی</button>
+            </div>
+            <button onclick="showHelp()">راهنما</button>
+        </div>
+
+        <!-- صفحه آزمون -->
+        <div id="quiz-container" class="quiz-container">
+            <div class="lesson-title" id="lesson-title"></div>
+            <div class="timer" id="timer">زمان: 05:00</div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options">
+                <button class="option-btn" onclick="selectOption(0)"></button>
+                <button class="option-btn" onclick="selectOption(1)"></button>
+                <button class="option-btn" onclick="selectOption(2)"></button>
+                <button class="option-btn" onclick="selectOption(3)"></button>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevQuestion()">⬅ قبلی</button>
+                <button class="nav-btn" onclick="nextQuestion()">بعدی ➡</button>
+                <button class="submit-btn" onclick="submitQuiz()">پایان آزمون</button>
+            </div>
+            <div class="question-numbers" id="question-numbers"></div>
+        </div>
+
+        <!-- صفحه نتایج -->
+        <div id="results-container" class="results-container">
+            <div class="summary" id="summary"></div>
+            <div class="question" id="result-question"></div>
+            <div class="options" id="result-options">
+                <button class="option-btn" disabled></button>
+                <button class="option-btn" disabled></button>
+                <button class="option-btn" disabled></button>
+                <button class="option-btn" disabled></button>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevResultQuestion()">⬅ قبلی</button>
+                <button class="nav-btn" onclick="nextResultQuestion()">بعدی ➡</button>
+                <button class="nav-btn" onclick="backToMainMenu()">بازگشت به منو</button>
+            </div>
+            <div class="question-numbers" id="result-numbers"></div>
+        </div>
+
+        <!-- صفحه راهنما -->
+        <div id="help-container" class="help-container">
+            <h2>راهنمای استفاده از آزمون</h2>
+            <p>
+                درس موردنظر را انتخاب کنید.<br>
+                شماره سوال‌ها پایین صفحه برای رفتن به سوال دلخواه است.<br>
+                با کلیدهای جهت‌نما می‌توانید بین سوالات حرکت کنید.<br>
+                پس از پاسخ دادن به همه سوالات، روی پایان آزمون کلیک کنید.<br>
+                در صفحه نتایج می‌توانید پاسخ صحیح و غلط خود را ببینید.<br><br>
+                موفق باشید!
+            </p>
+            <button onclick="backToMainMenu()">بازگشت به منو</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 برنامه آزمون موسسه خوارزمی. تمام حقوق محفوظ است.</p>
+    </footer>
+
+    <script>
+        // داده‌های سوالات (10 سوال اول هر فایل)
+        const questionsData = {
+            'graf': `Ctrl + V کلید میانبر کدام گزینه می‌باشد؟
+A) Copy
+B) Paste ✅
+C) Cut
+D) Select All
+
+ابزار Interactive Blend tool برای انجام چه عملی است؟
+A) کشیدن خط
+B) برای مخلوط کردن دو شی استفاده می‌شود ✅
+C) انتخاب رنگ
+D) حذف محتوی
+
+ابزار Pick Tool برای چه کاری استفاده می‌شود؟
+A) ابزار ویرایش متن
+B) ابزار کشیدن
+C) ابزار گزینش ماوس عادی ✅
+D) ابزار پاک‌کن
+
+ابعاد مجله و نشریه معمولاً در چه اندازه‌ای هستند؟
+A) رحلی ✅
+B) وزیری
+C) رقعی
+D) خشتی
+
+از کدام گزینه برای انتخاب پیکسل‌ها و رنگ‌های مشابه با قسمت انتخاب شده استفاده می‌شود？
+A) Magic Wand
+B) Lasso
+C) Similar ✅
+D) Quick Selection
+
+از کدام مد رنگ برای ایجاد تصاویر تلویزیون و صفحه نمایش استفاده می‌شود؟
+A) CMYK
+B) RGB ✅
+C) Grayscale
+D) Lab
+
+از گزینه Rotate در Transform برای چه کاری استفاده می‌شود؟
+A) برش تصویر
+B) برای مایل کردن تصویر ✅
+C) تغییر اندازه
+D) تغییر رنگ
+
+اگر بخواهید فقط شی لایه یا محتویات لایه شفاف شوند و جلوه‌های ویژه اعمال شده بر روی آن تغییری نکنند، کدام زبانه در پالت لایه‌ها کاربرد دارد؟
+A) Lock
+B) Fill ✅
+C) Opacity
+D) Mask
+
+انتخاب کدام گزینه باعث می‌شود تا محتویات لایه قفل شده و نتوان لایه را جابه‌جا کرد؟
+A) Lock Position ✅
+B) Lock Pixels
+C) Fill
+D) Opacity
+
+انتخاب کدام گزینه در قسمت Location مربوط به پنجره‌ی Stroke سبب می‌شود که عمل تورفتگی به سمت داخل انجام شود؟
+A) Center
+B) Outside
+C) Inside ✅
+D) Edge`,
+
+            'package': `ابزار Texture Fill Dialog برای کدام نوع رنگ‌آمیزی به کار می‌رود؟
+A) ساده
+B) گرادیان
+C) بافتی ✅
+D) الگو
+
+ابعاد کاغذ A4 برابر است با:
+A) 21 × 29.7 ✅
+B) 20 × 30
+C) 25 × 35
+D) 22 × 28
+
+از کدام برنامه برای نورپردازی روی تصویر استفاده می‌شود؟
+A) Photoshop
+B) Corel Draw ✅
+C) Paint
+D) Illustrator
+
+از کدام ابزار برای رسم خطوط صاف و منحنی استفاده می‌شود؟
+A) Line Tool
+B) Pencil
+C) Bezier ✅
+D) Brush
+
+از کدام گزینه جهت وارد کردن تصاویر به کامپیوتر استفاده می‌شود؟
+A) USB
+B) Scanner ✅
+C) Camera
+D) Upload
+
+از کدام نرم‌افزارها در طراحی بسته‌بندی بیشتر استفاده می‌شود؟
+A) Photoshop
+B) Illustrator 
+C) Corel Draw 
+D) گزینه 1 و 2 ✅
+
+از محیط‌های مناسب برای طراحی بروشور، برنامه ........ است.
+A) Photoshop
+B) Corel Draw ✅
+C) Paint
+D) Illustrator
+
+استفاده از برچسب در بسته‌بندی به کدام یک از عوامل زیر بستگی دارد؟
+A) نوع محصول
+B) رنگ‌بندی
+C) اندازه
+D) همه موارد ✅
+
+انتخاب عکس یا تصویرسازی در طراحی به کدام گزینه بستگی دارد؟
+A) موضوع
+B) هدف
+C) سبک
+D) همه موارد ✅
+
+انتخاب کدام گزینه در قسمت Location مربوط به پنجره Stroke سبب می‌شود که عمل تورفتگی به سمت داخل انجام شود؟
+A) Outside
+B) Center
+C) Inside ✅
+D) Edge`,
+
+            'layout': `از کدام علامت نگارشی جهت توضیح اضافی با اهمیت کمتر از متن اصلی استفاده می‌شود؟
+A) ویرگول
+B) خط تیره ✅
+C) نقطه
+D) دو نقطه
+
+از کدام گزینه برای ایجاد فهرست عنوان‌ها استفاده می‌شود؟
+A) Index
+B) Table of Contents ✅
+C) References
+D) Caption
+
+از کدام گزینه جهت حذف یک صفحه‌ی معیار استفاده می‌شود؟
+A) Page Setup
+B) Remove Master Page 
+C) Delete Spread 
+D) گزینه 1 و 2 ✅
+
+از کدام گزینه جهت همسان‌سازی ستون‌های جدول استفاده می‌گردد؟
+A) Align Columns
+B) Distribute Columns Evenly ✅
+C) Merge Columns
+D) Table Properties
+
+از کدام منو می‌توان صفحات جدید اضافه نمود؟
+A) Insert
+B) Layout ✅
+C) File
+D) Edit
+
+اگر بخواهید بدانید شی مورد نظر به کدام قسمت از متن قلاب شده است، از کدام گزینه می‌توان استفاده کرد؟
+A) Show Text Threads ✅
+B) Text Wrap
+C) Object Properties
+D) Layers
+
+اگر جنس جلد کتاب از انواع مقواهای نازک مانند گلاسه باشد، اصطلاحاً به آن جلد چه گویند؟
+A) سخت
+B) چرمی
+C) شومیز ✅
+D) وزیری
+
+اگر در هر پهنه بیشتر از یک صفحه داشته باشید، با انتخاب کدام گزینه چاپ پهنه به پهنه و هر پهنه در یک صفحه قرار می‌گیرد؟
+A) Sequential
+B) Sequence ✅
+C) Spread
+D) Facing Pages
+
+اگر در هنگام ورود متن بخواهید نرم‌افزار به طور پی‌درپی قاب متن بسازد، از کدام کلید استفاده می‌شود؟
+A) Ctrl
+B) Shift ✅
+C) Alt
+D) Tab
+
+اگر در کنار رنگ در پانل رنگ‌ها علامت احتیاط نمایش داده شود، به چه معناست؟
+A) رنگ انتخاب شده در چاپ قابل تولید نیست ✅
+B) رنگ انتخاب شده کم‌رنگ است
+C) رنگ حذف شده
+D) رنگ تغییر یافته`,
+
+            'rang': `درجات مختلف روشنی یک رنگ را چه می‌نامند؟
+A) ته‌رنگ
+B) درخشندگی ✅
+C) فام
+D) خلوص
+
+درجه سیری یا اشباع یک رنگ چه نامیده می‌شود؟
+A) فام
+B) ته‌رنگ
+C) درجه خلوص ✅
+D) کنتراست
+
+در چرخه رنگ کدام رنگ بیشترین درخشندگی و کدام یک کمترین درخشندگی را دارد؟
+A) قرمز – سبز
+B) آبی – نارنجی
+C) زرد – بنفش ✅
+D) سفید – مشکی
+
+در معماری اسلامی گنبدهای فیروزه‌ای مساجد به چه رنگی می‌باشند؟
+A) آبی لاجوردی ✅
+B) سبز
+C) زرد طلایی
+D) سفید
+
+در نوشته‌های تصویری مصر باستان کدام شکل برای نشان دادن مزرعه به کار می‌رفته است؟
+A) دایره
+B) مربع ✅
+C) مثلث
+D) لوزی
+
+دو رنگ مکمل وقتی در مجاورت هم قرار بگیرند خاصیت رنگین بودن یکدیگر را ..... می‌کنند و وقتی با یکدیگر مخلوط شوند خاصیت رنگین بودن یکدیگر را ..... می‌کنند؟
+A) تضعیف – خنثی
+B) تشدید – خنثی ✅
+C) تشدید – افزایش
+D) کاهش – افزایش
+
+ذرات بسیار ریزی که در آب غیرمحلولند و از آسیاب کردن مواد معدنی به دست می‌آیند، چه نام دارد؟
+A) رنگدانه‌ها ✅
+B) پیگمنت
+C) رنگینه‌ها
+D) جوهر
+
+رابطه متقابل دو یا چند سطح رنگی از نظر وسعت کدام کنتراست را ایجاد می‌کند؟
+A) کنتراست ته‌رنگ
+B) کنتراست کمیت ✅
+C) کنتراست خلوص
+D) کنتراست نوری
+
+رنگ بنفش با خصوصیات کدام شکل هندسی برابری می‌کند؟
+A) دایره
+B) مربع
+C) مثلث
+D) ترکیب دایره و مربع ✅
+
+رنگ حاصل از ترکیب زرد و آبی چیست؟
+A) نارنجی
+B) سبز ✅
+C) فیروزه‌ای
+D) ارغوانی`,
+
+            'type': `از کدام حالت نمایش برای طراحی صفحه وب در محیط Word استفاده می‌شود؟
+A) Print Layout
+B) Web Layout ✅
+C) Outline
+D) Draft
+
+از کدام دکمه جهت اعمال Tab استفاده می‌شود؟
+A) Set ✅
+B) Clear
+C) Enter
+D) Shift
+
+از کدام گزینه برای باز کردن یک فایل از قبل ذخیره شده استفاده می‌شود؟
+A) Save
+B) Open ✅
+C) Close
+D) New
+
+از کدام گزینه برای تعیین نحوه نمایش و قالب‌بندی شماره‌ها استفاده می‌شود؟
+A) Numbering
+B) Number Format ✅
+C) Page Layout
+D) Tab
+
+از کدام منوی IE برای انجام تنظیمات استفاده می‌شود؟
+A) File
+B) Edit
+C) Tools ✅
+D) View
+
+اشکال مربوط به طراحی فلوچارت در کدام قسمت وجود دارد؟
+A) Basic Shapes
+B) Flowchart ✅
+C) Lines
+D) Callouts
+
+اشکال هندسی پایه در کدام قسمت از ابزار Shape قرار دارند؟
+A) Flowchart
+B) Callouts
+C) Basic Shapes ✅
+D) Stars and Banners
+
+اگر بخواهیم صفحات ۲ و ۳ و ۴ از یک سند چاپ شوند، از کدام عملگر استفاده می‌کنیم؟
+A) , ✅
+B) –
+C) :
+D) ;
+
+اگر بخواهیم کاغذ چاپ به صورت افقی و خوابیده باشد، کدام گزینه باید در نظر گرفته شود؟
+A) Portrait
+B) Landscape ✅
+C) Duplex
+D) Reverse
+
+اگر بخواهیم هنگام طراحی، شکل دایره رسم کنیم، کدام کلید را باید نگه داریم؟
+A) Ctrl
+B) Shift ✅
+C) Alt
+D) Tab`,
+
+            'blackwhite': `...................... در ابتدایی‌ترین حالتش، نمایشگر حرکت و تداوم آن در فضا و مهمترین عامل طراحی است.
+  نقطه
+  سطح
+  خط ✅
+  حجم
+
+........................ مایعی است ژله رنگ که برای چسباندن سطوح استفاده می‌شود.
+  چسب چوب
+  چسب حرارتی
+  چسب مایع ✅
+  چسب نواری
+
+ابتدایی‌ترین وسیله اثرگذار چیست؟
+  مداد
+  قلم‌مو
+  زغال ✅
+  خودکار
+
+ابزارهایی که از آن‌ها برای رسم، کشیدن و نوشتن متن استفاده می‌شود چه نام دارند؟
+  ابزارهای اثرگذار ✅
+  ابزارهای اثرپذیر
+  ابزارهای برش
+  ابزارهای ترکیب
+
+از برخورد دو خط با هم یک ....................... به وجود می‌آید.
+  نقطه تاکید ✅
+  سطح
+  حجم
+  تعادل
+
+از بسط و گسترش سطوح با یکدیگر کدام عنصر بصری به وجود می‌آید؟
+  خط
+  حجم ✅
+  بافت
+  کادر
+
+از تکرار تغییر و حرکت عناصر بصری در فضا ....................... به وجود می‌آید.
+  کنتراست
+  ریتم ✅
+  فرم
+  سطح
+
+از چرخش دایره به دور محور قطری خودش، کدام حجم ساخته می‌شود؟
+  مخروط
+  استوانه
+  کره ✅
+  مکعب
+
+از چرخش مثلث حول محور عمودی خودش کدام حجم به وجود می‌آید؟
+  مکعب
+  استوانه
+  مخروط ✅
+  هرم
+
+از مهم‌ترین نشانه‌های راهنمایی و رانندگی .................................. می‌باشد.
+  تابلو
+  چراغ راهنما
+  خط کشی ✅
+  علائم هشدار`,
+
+            'user': `اَبَر سایت هایی که برای جستجوی اطلاعات استفاده می‌شوند چه نام دارند؟
+A) مرورگر
+B) موتور جستجو ✅
+C) وب‌سایت
+D) لینک
+
+آدرس گیرندگانی مخفی در کدام کادر نوشته می‌شود؟
+A) To
+B) Cc
+C) Bcc ✅
+D) Reply
+
+از کدام منوی IE برای انجام تنظیمات استفاده می‌شود？
+A) File
+B) Edit
+C) Tools ✅
+D) View
+
+اعتبار و اشتراکی که یک ISP به مشتری ارائه می‌کند، چه نام دارد؟
+A) User
+B) Account ✅
+C) Subscription
+D) License
+
+انتخاب کدام گزینه در پنجره Option Folder سبب می‌شود تا فایل‌ها و پوشه‌های مخفی نمایش داده شوند؟
+A) Show hidden files & Folders ✅
+B) Display all files
+C) Hidden Items
+D) View Hidden
+
+انتخاب کدام گزینه در کادر Print باعث چاپ ناحیه انتخابی می‌شود؟
+A) All
+B) Selection ✅
+C) Current Page
+D) Pages
+
+انتخاب کدام گزینه سبب می‌شود تا رایانه به طور کامل خاموش شود و تمام اطلاعات موجود در حافظه RAM پاک شود؟
+A) Restart
+B) Sleep
+C) Shut Down ✅
+D) Log Off
+
+اولین پنجره یا اساسی‌ترین پنجره ویندوز کدام گزینه می‌باشد؟
+A) Window
+B) Desktop ✅
+C) Explorer
+D) Taskbar
+
+با Drop & Drag یک آیکن به پنجره‌ای دیگر، در همان درایو چه عملی انجام می‌شود؟
+A) Copy
+B) Cut/Paste ✅
+C) Move
+D) Delete
+
+با استفاده از کدام برنامه می‌توان از اطلاعات سیستم نسخه پشتیبان تهیه کرد؟
+A) Backup
+B) Restore & Backup ✅
+C) Recovery
+D) Save`
+        };
+
+        // متغیرهای جهانی
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let timerSeconds = 5 * 60; // 5 دقیقه
+        let timerInterval;
+        let currentLesson = "";
+
+        // بارگذاری سوالات از داده‌ها
+        function loadQuestions(filename) {
+            const content = questionsData[filename];
+            if (!content) return [];
+            
+            const blocks = content.split("\n\n");
+            const loadedQuestions = [];
+            
+            for (const block of blocks) {
+                const lines = block.trim().split("\n");
+                if (lines.length < 2) continue;
+                
+                const qText = lines[0].trim();
+                const options = [];
+                let answer = null;
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const text = lines[i].replace("✅", "").trim();
+                    options.push(text);
+                    
+                    if (lines[i].includes("✅")) {
+                        answer = text;
+                    }
+                }
+                
+                if (answer) {
+                    loadedQuestions.push({
+                        question: qText,
+                        options: options,
+                        answer: answer,
+                        selected: null
+                    });
+                }
+            }
+            
+            return loadedQuestions.slice(0, 10); // فقط 10 سوال اول
+        }
+
+        // شروع آزمون
+        function startQuiz(filename, lessonName) {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('help-container').style.display = 'none';
+            
+            currentLesson = lessonName;
+            document.getElementById('lesson-title').textContent = lessonName;
+            
+            const allQuestions = loadQuestions(filename);
+            questions = allQuestions;
+            
+            // به هم ریختن گزینه‌ها
+            questions.forEach(q => {
+                shuffleArray(q.options);
+                q.selected = null;
+            });
+            
+            currentQuestionIndex = 0;
+            createQuestionNumberButtons();
+            startTimer();
+            showQuestion();
+        }
+
+        // نمایش سوال فعلی
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question').textContent = question.question;
+            
+            const optionButtons = document.querySelectorAll('#options .option-btn');
+            for (let i = 0; i < 4; i++) {
+                optionButtons[i].textContent = question.options[i];
+                optionButtons[i].className = 'option-btn';
+                
+                if (question.options[i] === question.selected) {
+                    optionButtons[i].classList.add('selected');
+                }
+            }
+            
+            updateQuestionNumberButtons();
+        }
+
+        // انتخاب گزینه
+        function selectOption(index) {
+            questions[currentQuestionIndex].selected = questions[currentQuestionIndex].options[index];
+            showQuestion();
+        }
+
+        // ایجاد دکمه‌های شماره سوالات
+        function createQuestionNumberButtons() {
+            const container = document.getElementById('question-numbers');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < questions.length; i++) {
+                const button = document.createElement('button');
+                button.textContent = i + 1;
+                button.className = 'number-btn';
+                button.onclick = () => goToQuestion(i);
+                container.appendChild(button);
+            }
+        }
+
+        // بروزرسانی دکمه‌های شماره سوالات
+        function updateQuestionNumberButtons() {
+            const numberButtons = document.querySelectorAll('#question-numbers .number-btn');
+            
+            for (let i = 0; i < questions.length; i++) {
+                if (i === currentQuestionIndex) {
+                    numberButtons[i].className = 'number-btn selected';
+                } else if (questions[i].selected) {
+                    numberButtons[i].className = 'number-btn correct';
+                } else {
+                    numberButtons[i].className = 'number-btn';
+                }
+            }
+        }
+
+        // رفتن به سوال مشخص
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        // سوال بعدی
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            }
+        }
+
+        // سوال قبلی
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        // شروع تایمر
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = 5 * 60;
+            
+            timerInterval = setInterval(() => {
+                if (timerSeconds >= 0) {
+                    const minutes = Math.floor(timerSeconds / 60);
+                    const seconds = timerSeconds % 60;
+                    document.getElementById('timer').textContent = `زمان: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    timerSeconds--;
+                } else {
+                    clearInterval(timerInterval);
+                    alert('زمان آزمون به پایان رسید!');
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        // ارسال آزمون
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            // بررسی سوالات بی‌پاسخ
+            const unanswered = [];
+            for (let i = 0; i < questions.length; i++) {
+                if (!questions[i].selected) {
+                    unanswered.push(i + 1);
+                }
+            }
+            
+            if (unanswered.length > 0) {
+                alert(`لطفا به همه سوالات پاسخ دهید!\nسوالات بی‌پاسخ: ${unanswered.join(', ')}`);
+                return;
+            }
+            
+            showResults();
+        }
+
+        // نمایش نتایج
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+            
+            // محاسبه نتایج
+            let correctCount = 0;
+            for (const q of questions) {
+                if (q.selected === q.answer) {
+                    correctCount++;
+                }
+            }
+            
+            const total = questions.length;
+            const percentage = Math.round((correctCount / total) * 100);
+            document.getElementById('summary').textContent = `درست: ${correctCount}  غلط: ${total - correctCount}  درصد: ${percentage}%`;
+            
+            currentQuestionIndex = 0;
+            createResultNumberButtons();
+            showResultQuestion();
+        }
+
+        // نمایش سوال در صفحه نتایج
+        function showResultQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('result-question').textContent = question.question;
+            
+            const optionButtons = document.querySelectorAll('#result-options .option-btn');
+            for (let i = 0; i < 4; i++) {
+                optionButtons[i].textContent = question.options[i];
+                optionButtons[i].className = 'option-btn';
+                
+                if (question.options[i] === question.answer) {
+                    optionButtons[i].classList.add('correct');
+                } else if (question.options[i] === question.selected && question.selected !== question.answer) {
+                    optionButtons[i].classList.add('incorrect');
+                }
+            }
+            
+            updateResultNumberButtons();
+        }
+
+        // ایجاد دکمه‌های شماره سوالات در صفحه نتایج
+        function createResultNumberButtons() {
+            const container = document.getElementById('result-numbers');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < questions.length; i++) {
+                const button = document.createElement('button');
+                button.textContent = i + 1;
+                button.className = 'number-btn';
+                button.onclick = () => goToResultQuestion(i);
+                container.appendChild(button);
+            }
+        }
+
+        // بروزرسانی دکمه‌های شماره سوالات در صفحه نتایج
+        function updateResultNumberButtons() {
+            const numberButtons = document.querySelectorAll('#result-numbers .number-btn');
+            
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                
+                if (i === currentQuestionIndex) {
+                    numberButtons[i].className = 'number-btn selected';
+                } else if (q.selected === q.answer) {
+                    numberButtons[i].className = 'number-btn correct';
+                } else if (q.selected !== null) {
+                    numberButtons[i].className = 'number-btn incorrect';
+                } else {
+                    numberButtons[i].className = 'number-btn';
+                }
+            }
+        }
+
+        // رفتن به سوال مشخص در صفحه نتایج
+        function goToResultQuestion(index) {
+            currentQuestionIndex = index;
+            showResultQuestion();
+        }
+
+        // سوال بعدی در صفحه نتایج
+        function nextResultQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showResultQuestion();
+            }
+        }
+
+        // سوال قبلی در صفحه نتایج
+        function prevResultQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showResultQuestion();
+            }
+        }
+
+        // نمایش راهنما
+        function showHelp() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('help-container').style.display = 'block';
+        }
+
+        // بازگشت به منوی اصلی
+        function backToMainMenu() {
+            document.getElementById('main-menu').style.display = 'flex';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('help-container').style.display = 'none';
+            clearInterval(timerInterval);
+        }
+
+        // به هم ریختن آرایه (برای تصادفی کردن گزینه‌ها)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // مدیریت کلیدهای صفحه کلید
+        document.addEventListener('keydown', function(event) {
+            // کنترل + انتخاب پاسخ صحیح
+            if (event.ctrlKey) {
+                questions[currentQuestionIndex].selected = questions[currentQuestionIndex].answer;
+                showQuestion();
+            }
+            
+            // کلیدهای جهت‌دار برای ناوبری
+            if (event.key === 'ArrowRight') {
+                prevQuestion();
+            } else if (event.key === 'ArrowLeft') {
+                nextQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
