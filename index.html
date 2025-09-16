@@ -266,6 +266,46 @@
             border-bottom: 2px solid var(--accent-color);
         }
         
+        /* استایل صفحه ورود رمز */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .login-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .login-message {
+            margin-top: 15px;
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+        
         /* استایل فوتر */
         footer {
             text-align: center;
@@ -306,6 +346,10 @@
                 width: 100%;
                 margin: 5px 0;
             }
+            
+            .login-box {
+                width: 90%;
+            }
         }
     </style>
 </head>
@@ -315,8 +359,19 @@
     </header>
     
     <div class="container">
+        <!-- صفحه ورود رمز -->
+        <div id="login-container" class="login-container">
+            <div class="login-box">
+                <h2><i class="fas fa-lock"></i> ورود به سیستم آزمون</h2>
+                <p>لطفاً رمز عبور را برای دسترسی به آزمون وارد کنید:</p>
+                <input type="password" id="password-input" placeholder="رمز عبور">
+                <button onclick="checkPassword()"><i class="fas fa-sign-in-alt"></i> ورود</button>
+                <p id="login-message" class="login-message"></p>
+            </div>
+        </div>
+
         <!-- منوی اصلی -->
-        <div id="main-menu" class="main-menu">
+        <div id="main-menu" class="main-menu" style="display: none;">
             <div class="lesson-buttons">
                 <button class="lesson-btn" onclick="startQuiz('rang', 'طراحی رنگی')">طراحی رنگی</button>
                 <button class="lesson-btn" onclick="startQuiz('graf', 'گرافیک رایانه')">گرافیک رایانه</button>
@@ -327,6 +382,7 @@
                 <button class="lesson-btn" onclick="startQuiz('layout', 'صفحه‌آرایی')">صفحه‌آرایی</button>
             </div>
             <button onclick="showHelp()"><i class="fas fa-question-circle"></i> راهنما</button>
+            <button onclick="logout()" style="background-color: var(--danger-color);"><i class="fas fa-sign-out-alt"></i> خروج</button>
         </div>
 
         <!-- صفحه آزمون -->
@@ -430,7 +486,7 @@ B) برای مایل کردن تصویر ✅
 C) تغییر اندازه
 D) تغییر رنگ
 
-اگر بخواهید فقط شی لایه یا محتویات لایه شفاف شوند و جلوه‌های ویژه اعمال شده بر روی آن تغییری نکنند، کدام زبانه در پالت لایه‌ها کاربرد دارد？
+اگر بخواهید فقط شی لایه یا محتویات لایه شفاف شوند و جلوه‌های ویژه اعمال شده بر روی آن تغییری نکنند، کدام زبانه در پالت لایه‌ها کاربرد دارد؟
 A) Lock
 B) Fill ✅
 C) Opacity
@@ -466,7 +522,7 @@ B) Corel Draw ✅
 C) Paint
 D) Illustrator
 
-از کدام ابزار برای رسم خطوط صاف و منحنی استفاده می‌شود？
+از کدام ابزار برای رسم خطوط صاف و منحنی استفاده می‌شود؟
 A) Line Tool
 B) Pencil
 C) Bezier ✅
@@ -578,7 +634,7 @@ D) خلوص
 A) فام
 B) ته‌رنگ
 C) درجه خلوص ✅
-D) کنتراست
+D) کنترast
 
 در چرخه رنگ کدام رنگ بیشترین درخشندگی و کدام یک کمترین درخشندگی را دارد؟
 A) قرمز – سبز
@@ -622,7 +678,7 @@ B) مربع
 C) مثلث
 D) ترکیب دایره و مربع ✅
 
-رنگ حاصل از ترکیب زرد و آبی چیست？
+رنگ حاصل از ترکیب زرد و آبی چیست؟
 A) نارنجی
 B) سبز ✅
 C) فیروزه‌ای
@@ -664,7 +720,7 @@ B) Flowchart ✅
 C) Lines
 D) Callouts
 
-اشکال هندسی پایه در کدام قسمت از ابزار Shape قرار دارند？
+اشکال هندسی پایه در کدام قسمت از ابزار Shape قرار دارند؟
 A) Flowchart
 B) Callouts
 C) Basic Shapes ✅
@@ -744,7 +800,7 @@ D) Tab`,
 
 از مهم‌ترین نشانه‌های راهنمایی و رانندگی .................................. می‌باشد.
   تابلو
-  چراغ راهنما
+  چراغ راهنma
   خط کشی ✅
   علائم هشدار`,
 
@@ -754,55 +810,55 @@ B) موتور جستجو ✅
 C) وب‌سایت
 D) لینک
 
-آدرس گیرندگانی مخفی در کدام کادر نوشته می‌شود？
+آدرس گیرندگانی مخفی در کدام کادر نوشته می‌شود؟
 A) To
 B) Cc
 C) Bcc ✅
 D) Reply
 
-از کدام منوی IE برای انجام تنظیمات استفاده می‌شود？
+از کدام منوی IE برای انجام تنظیمات استفاده می‌شود؟
 A) File
 B) Edit
 C) Tools ✅
 D) View
 
-اعتبار و اشتراکی که یک ISP به مشتری ارائه می‌کند، چه نام دارد？
+اعتبار و اشتراکی که یک ISP به مشتری ارائه می‌کند، چه نام دارد؟
 A) User
 B) Account ✅
 C) Subscription
 D) License
 
-انتخاب کدام گزینه در پنجره Option Folder سبب می‌شود تا فایل‌ها و پوشه‌های مخفی نمایش داده شوند？
+انتخاب کدام گزینه در پنجره Option Folder سبب می‌شود تا فایل‌ها و پوشه‌های مخفی نمایش داده شوند؟
 A) Show hidden files & Folders ✅
 B) Display all files
 C) Hidden Items
 D) View Hidden
 
-انتخاب کدام گزینه در کادر Print باعث چاپ ناحیه انتخابی می‌شود？
+انتخاب کدام گزینه در کادر Print باعث چاپ ناحیه انتخابی می‌شود؟
 A) All
 B) Selection ✅
 C) Current Page
 D) Pages
 
-انتخاب کدام گزینه سبب می‌شود تا رایانه به طور کامل خاموش شود و تمام اطلاعات موجود در حافظه RAM پاک شود？
+انتخاب کدام گزینه سبب می‌شود تا رایانه به طور کامل خاموش شود و تمام اطلاعات موجود در حافظه RAM پاک شود؟
 A) Restart
 B) Sleep
 C) Shut Down ✅
 D) Log Off
 
-اولین پنجره یا اساسی‌ترین پنجره ویندوز کدام گزینه می‌باشد？
+اولین پنجره یا اساسی‌ترین پنجره ویندوز کدام گزینه می‌باشد؟
 A) Window
 B) Desktop ✅
 C) Explorer
 D) Taskbar
 
-با Drop & Drag یک آیکن به پنجره‌ای دیگر، در همان درایو چه عملی انجام می‌شود？
+با Drop & Drag یک آیکن به پنجره‌ای دیگر، در همان درایv چه عملی انجام می‌شود؟
 A) Copy
 B) Cut/Paste ✅
 C) Move
 D) Delete
 
-با استفاده از کدام برنامه می‌توان از اطلاعات سیستم نسخه پشتیبان تهیه کرد？
+با استفاده از کدام برنامه می‌توان از اطلاعات سیستم نسخه پشتیبان تهیه کرد؟
 A) Backup
 B) Restore & Backup ✅
 C) Recovery
@@ -815,6 +871,59 @@ D) Save`
         let timerSeconds = 5 * 60; // 5 دقیقه
         let timerInterval;
         let currentLesson = "";
+        let correctPassword = "";
+
+        // بارگذاری رمز از فایل
+        function loadPasswordFromFile() {
+            fetch('password.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('فایل رمز یافت نشد');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    correctPassword = text.trim();
+                })
+                .catch(error => {
+                    document.getElementById('login-message').textContent = 
+                        'خطا در بارگذاری رمز: ' + error.message;
+                    console.error('خطا در خواندن فایل رمز:', error);
+                });
+        }
+
+        // بررسی رمز ورودی
+        function checkPassword() {
+            const inputPassword = document.getElementById('password-input').value;
+            const messageElement = document.getElementById('login-message');
+            
+            if (!correctPassword) {
+                messageElement.textContent = 'رمز سیستم بارگذاری نشده است';
+                return;
+            }
+            
+            if (inputPassword === correctPassword) {
+                // نمایش منوی اصلی
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('main-menu').style.display = 'flex';
+                messageElement.textContent = '';
+            } else {
+                messageElement.textContent = 'رمز عبور اشتباه است';
+            }
+        }
+
+        // خروج از سیستم
+        function logout() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('help-container').style.display = 'none';
+            document.getElementById('login-container').style.display = 'flex';
+            document.getElementById('password-input').value = '';
+            
+            // توقف تایمر اگر فعال باشد
+            clearInterval(timerInterval);
+        }
 
         // بارگذاری سوالات از داده‌ها
         function loadQuestions(filename) {
@@ -1130,6 +1239,16 @@ D) Save`
             } else if (event.key === 'ArrowLeft') {
                 nextQuestion();
             }
+            
+            // کلید Enter در صفحه ورود رمز
+            if (event.key === 'Enter' && document.getElementById('login-container').style.display !== 'none') {
+                checkPassword();
+            }
+        });
+
+        // بارگذاری رمز از فایل هنگام بارگذاری صفحه
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPasswordFromFile();
         });
     </script>
 </body>
