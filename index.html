@@ -878,7 +878,7 @@ D) Save`
             fetch('password.txt')
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('فایل رمز یافت نشد');
+                        throw new Error('رمز تعیین نشده');
                     }
                     return response.text();
                 })
@@ -1253,3 +1253,4 @@ D) Save`
     </script>
 </body>
 </html>
+
