@@ -4,20 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>برنامه آزمون موسسه خوارزمی</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* استایل کلی صفحه */
+        :root {
+            --primary-color: #1a5f7a;
+            --secondary-color: #159895;
+            --accent-color: #ffc107;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+        
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Vazir', 'Tanha', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #1a1a1a;
-            color: #fff;
+            background-color: #f5f5f5;
+            color: #333;
             line-height: 1.6;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
         }
         
@@ -27,9 +37,24 @@
             padding: 20px;
         }
         
+        /* استایل هدر */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
         /* استایل دکمه‌ها */
         button {
-            background-color: #555555;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -38,31 +63,39 @@
             font-size: 16px;
             font-weight: bold;
             margin: 5px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
         button:hover {
-            background-color: #666666;
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
         button.selected {
-            background-color: #3399ff;
+            background-color: var(--accent-color);
+            color: var(--dark-color);
         }
         
         button.correct {
-            background-color: #33cc33;
+            background-color: var(--success-color);
         }
         
         button.incorrect {
-            background-color: #ff4d4d;
+            background-color: var(--danger-color);
         }
         
         button.nav-btn {
-            background-color: #2b5278;
+            background-color: var(--primary-color);
         }
         
         button.submit-btn {
-            background-color: #33cc33;
+            background-color: var(--success-color);
+        }
+        
+        button.submit-btn:hover {
+            background-color: #218838;
         }
         
         /* استایل منوی اصلی */
@@ -71,7 +104,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 80vh;
+            min-height: 70vh;
+            padding: 20px;
         }
         
         .lesson-buttons {
@@ -79,38 +113,68 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin-bottom: 30px;
+            width: 100%;
+            max-width: 900px;
         }
         
         .lesson-btn {
-            width: 400px;
-            height: 70px;
-            font-size: 22px;
+            width: 100%;
+            height: 80px;
+            font-size: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .lesson-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
         
         /* استایل بخش سوالات */
         .quiz-container {
             display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
         
         .lesson-title {
-            font-size: 40px;
+            font-size: 28px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
+            color: var(--primary-color);
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
         }
         
         .timer {
             font-size: 18px;
             text-align: center;
             margin-bottom: 20px;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: var(--dark-color);
         }
         
         .question {
-            font-size: 25px;
+            font-size: 22px;
             font-weight: bold;
             margin: 20px 0;
             text-align: right;
             line-height: 1.6;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-right: 4px solid var(--primary-color);
         }
         
         .options {
@@ -122,36 +186,53 @@
         
         .option-btn {
             width: 100%;
-            height: 50px;
+            height: 60px;
             text-align: right;
-            font-size: 20px;
+            font-size: 18px;
             padding: 0 20px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            transform: translateX(-5px);
         }
         
         .navigation {
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            flex-wrap: wrap;
         }
         
         .question-numbers {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
             margin: 20px 0;
         }
         
         .number-btn {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             font-size: 16px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
         
         /* استایل صفحه نتایج */
         .results-container {
             display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
         
         .summary {
@@ -159,6 +240,10 @@
             font-weight: bold;
             text-align: center;
             margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
         }
         
         /* استایل راهنما */
@@ -166,24 +251,30 @@
             display: none;
             text-align: right;
             line-height: 2;
-            font-size: 20px;
-            padding: 20px;
-        }
-        
-        /* استایل هدر و فوتر */
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #444;
+            font-size: 18px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
         
+        .help-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        /* استایل فوتر */
         footer {
             text-align: center;
             padding: 20px 0;
-            border-top: 1px solid #444;
             margin-top: 30px;
             font-size: 14px;
+            color: #6c757d;
+            background-color: var(--light-color);
+            border-top: 1px solid #dee2e6;
         }
         
         /* رسپانسیو */
@@ -193,15 +284,27 @@
             }
             
             .lesson-btn {
-                width: 100%;
+                height: 70px;
+                font-size: 18px;
             }
             
             .question {
-                font-size: 20px;
+                font-size: 18px;
             }
             
             .option-btn {
                 font-size: 16px;
+                height: 55px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .navigation button {
+                width: 100%;
+                margin: 5px 0;
             }
         }
     </style>
@@ -223,7 +326,7 @@
                 <button class="lesson-btn" onclick="startQuiz('type', 'تایپ')">تایپ</button>
                 <button class="lesson-btn" onclick="startQuiz('layout', 'صفحه‌آرایی')">صفحه‌آرایی</button>
             </div>
-            <button onclick="showHelp()">راهنما</button>
+            <button onclick="showHelp()"><i class="fas fa-question-circle"></i> راهنما</button>
         </div>
 
         <!-- صفحه آزمون -->
@@ -238,9 +341,9 @@
                 <button class="option-btn" onclick="selectOption(3)"></button>
             </div>
             <div class="navigation">
-                <button class="nav-btn" onclick="prevQuestion()">⬅ قبلی</button>
-                <button class="nav-btn" onclick="nextQuestion()">بعدی ➡</button>
-                <button class="submit-btn" onclick="submitQuiz()">پایان آزمون</button>
+                <button class="nav-btn" onclick="prevQuestion()"><i class="fas fa-arrow-right"></i> قبلی</button>
+                <button class="nav-btn" onclick="nextQuestion()">بعدی <i class="fas fa-arrow-left"></i></button>
+                <button class="submit-btn" onclick="submitQuiz()"><i class="fas fa-check-circle"></i> پایان آزمون</button>
             </div>
             <div class="question-numbers" id="question-numbers"></div>
         </div>
@@ -256,25 +359,25 @@
                 <button class="option-btn" disabled></button>
             </div>
             <div class="navigation">
-                <button class="nav-btn" onclick="prevResultQuestion()">⬅ قبلی</button>
-                <button class="nav-btn" onclick="nextResultQuestion()">بعدی ➡</button>
-                <button class="nav-btn" onclick="backToMainMenu()">بازگشت به منو</button>
+                <button class="nav-btn" onclick="prevResultQuestion()"><i class="fas fa-arrow-right"></i> قبلی</button>
+                <button class="nav-btn" onclick="nextResultQuestion()">بعدی <i class="fas fa-arrow-left"></i></button>
+                <button class="nav-btn" onclick="backToMainMenu()"><i class="fas fa-home"></i> بازگشت به منو</button>
             </div>
             <div class="question-numbers" id="result-numbers"></div>
         </div>
 
         <!-- صفحه راهنما -->
         <div id="help-container" class="help-container">
-            <h2>راهنمای استفاده از آزمون</h2>
+            <h2><i class="fas fa-info-circle"></i> راهنمای استفاده از آزمون</h2>
             <p>
-                درس موردنظر را انتخاب کنید.<br>
-                شماره سوال‌ها پایین صفحه برای رفتن به سوال دلخواه است.<br>
-                با کلیدهای جهت‌نما می‌توانید بین سوالات حرکت کنید.<br>
-                پس از پاسخ دادن به همه سوالات، روی پایان آزمون کلیک کنید.<br>
-                در صفحه نتایج می‌توانید پاسخ صحیح و غلط خود را ببینید.<br><br>
+                <i class="fas fa-check"></i> درس موردنظر را انتخاب کنید.<br>
+                <i class="fas fa-check"></i> شماره سوال‌ها پایین صفحه برای رفتن به سوال دلخواه است.<br>
+                <i class="fas fa-check"></i> با کلیدهای جهت‌نما می‌توانید بین سوالات حرکت کنید.<br>
+                <i class="fas fa-check"></i> پس از پاسخ دادن به همه سوالات، روی پایان آزمون کلیک کنید.<br>
+                <i class="fas fa-check"></i> در صفحه نتایج می‌توانید پاسخ صحیح و غلط خود را ببینید.<br><br>
                 موفق باشید!
             </p>
-            <button onclick="backToMainMenu()">بازگشت به منو</button>
+            <button onclick="backToMainMenu()"><i class="fas fa-arrow-right"></i> بازگشت به منو</button>
         </div>
     </div>
     
@@ -327,7 +430,7 @@ B) برای مایل کردن تصویر ✅
 C) تغییر اندازه
 D) تغییر رنگ
 
-اگر بخواهید فقط شی لایه یا محتویات لایه شفاف شوند و جلوه‌های ویژه اعمال شده بر روی آن تغییری نکنند، کدام زبانه در پالت لایه‌ها کاربرد دارد؟
+اگر بخواهید فقط شی لایه یا محتویات لایه شفاف شوند و جلوه‌های ویژه اعمال شده بر روی آن تغییری نکنند، کدام زبانه در پالت لایه‌ها کاربرد دارد？
 A) Lock
 B) Fill ✅
 C) Opacity
@@ -363,7 +466,7 @@ B) Corel Draw ✅
 C) Paint
 D) Illustrator
 
-از کدام ابزار برای رسم خطوط صاف و منحنی استفاده می‌شود؟
+از کدام ابزار برای رسم خطوط صاف و منحنی استفاده می‌شود？
 A) Line Tool
 B) Pencil
 C) Bezier ✅
@@ -519,7 +622,7 @@ B) مربع
 C) مثلث
 D) ترکیب دایره و مربع ✅
 
-رنگ حاصل از ترکیب زرد و آبی چیست؟
+رنگ حاصل از ترکیب زرد و آبی چیست？
 A) نارنجی
 B) سبز ✅
 C) فیروزه‌ای
@@ -561,7 +664,7 @@ B) Flowchart ✅
 C) Lines
 D) Callouts
 
-اشکال هندسی پایه در کدام قسمت از ابزار Shape قرار دارند؟
+اشکال هندسی پایه در کدام قسمت از ابزار Shape قرار دارند？
 A) Flowchart
 B) Callouts
 C) Basic Shapes ✅
@@ -651,7 +754,7 @@ B) موتور جستجو ✅
 C) وب‌سایت
 D) لینک
 
-آدرس گیرندگانی مخفی در کدام کادر نوشته می‌شود؟
+آدرس گیرندگانی مخفی در کدام کادر نوشته می‌شود？
 A) To
 B) Cc
 C) Bcc ✅
@@ -663,43 +766,43 @@ B) Edit
 C) Tools ✅
 D) View
 
-اعتبار و اشتراکی که یک ISP به مشتری ارائه می‌کند، چه نام دارد؟
+اعتبار و اشتراکی که یک ISP به مشتری ارائه می‌کند، چه نام دارد？
 A) User
 B) Account ✅
 C) Subscription
 D) License
 
-انتخاب کدام گزینه در پنجره Option Folder سبب می‌شود تا فایل‌ها و پوشه‌های مخفی نمایش داده شوند؟
+انتخاب کدام گزینه در پنجره Option Folder سبب می‌شود تا فایل‌ها و پوشه‌های مخفی نمایش داده شوند？
 A) Show hidden files & Folders ✅
 B) Display all files
 C) Hidden Items
 D) View Hidden
 
-انتخاب کدام گزینه در کادر Print باعث چاپ ناحیه انتخابی می‌شود؟
+انتخاب کدام گزینه در کادر Print باعث چاپ ناحیه انتخابی می‌شود？
 A) All
 B) Selection ✅
 C) Current Page
 D) Pages
 
-انتخاب کدام گزینه سبب می‌شود تا رایانه به طور کامل خاموش شود و تمام اطلاعات موجود در حافظه RAM پاک شود؟
+انتخاب کدام گزینه سبب می‌شود تا رایانه به طور کامل خاموش شود و تمام اطلاعات موجود در حافظه RAM پاک شود？
 A) Restart
 B) Sleep
 C) Shut Down ✅
 D) Log Off
 
-اولین پنجره یا اساسی‌ترین پنجره ویندوز کدام گزینه می‌باشد؟
+اولین پنجره یا اساسی‌ترین پنجره ویندوز کدام گزینه می‌باشد？
 A) Window
 B) Desktop ✅
 C) Explorer
 D) Taskbar
 
-با Drop & Drag یک آیکن به پنجره‌ای دیگر، در همان درایو چه عملی انجام می‌شود؟
+با Drop & Drag یک آیکن به پنجره‌ای دیگر، در همان درایو چه عملی انجام می‌شود？
 A) Copy
 B) Cut/Paste ✅
 C) Move
 D) Delete
 
-با استفاده از کدام برنامه می‌توان از اطلاعات سیستم نسخه پشتیبان تهیه کرد؟
+با استفاده از کدام برنامه می‌توان از اطلاعات سیستم نسخه پشتیبان تهیه کرد？
 A) Backup
 B) Restore & Backup ✅
 C) Recovery
